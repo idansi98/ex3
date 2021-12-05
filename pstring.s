@@ -150,50 +150,50 @@ swapCase:
 .global pstrijcmp
 .type pstrijcmp, @function
 pstrijcmp:
-    pushq   %rbp
-    movq    %rsp, %rbp
-    cmpl    $0, %edx    # i<0
-    jl      .mistake
-    cmpb    (%rsi), %cl # j>src
-    jge     .mistake
-    cmpb    (%rdi), %cl # j>dst
-    jge     .mistake
-    cmpl    %edx, %ecx  # i>j
-    jl      .mistake
-    jmp     .ok
-.mistake:   #   print mistake
-    movq    $0, %rax
-    movq    $error, %rdi
-    call    printf
-    movq    $0, %rax
-    xorq    %r8, %r8
-    movq    $-2, %r8
-    movq    %r8, %rax
-    jmp     .finish
-.ok:    #   dst +=1, src+=1
-    movq    $0, %rax
-    leaq    1(%rdx, %rdi), %rdi
-    leaq    1(%rdx, %rsi), %rsi
+    subq    $8, %rsp
+    cmpb    $0, %dl             #Check if i < 0.
+    jl      .pstrijcmp_error
+    cmpq    %rdx, %rcx          #Check if i > j.
+    jl      .pstrijcmp_error
+    cmpb    (%rdi), %cl         #Check if  j > first string's length.
+    jge     .pstrijcmp_error
+    cmpb    (%rsi), %cl         #Check if j > Second string's length.
+    jge     .pstrijcmp_error
+    leaq    1(%rdx, %rdi), %rdi #Get the first string's address that starts from i 1 byte further.
+    leaq    1(%rdx, %rsi), %rsi #Get the second string's address that starts from i 1 byte further.
+    jmp     .pstrijcmp_loop
+
 .pstrijcmp_loop:
-    movq    (%rdi), %r11    # r11==dst
-    cmpb    %r11b, (%rsi)   # compear
-    jl      .bigger         # case big
-    cmpb    %r11b, (%rsi)   # compear
-    jg      .smaller        # case small
+    xor     %r8, %r8
+    movq    (%rdi), %r8         #Put %r8 as the the i'th byte of string 1.
+    cmpb    %r8b, (%rsi)        #Check if string 1[i]'s value is bigger than string 2[i]'s value.
+    jl      .bigger
+    cmpb    %r8b, (%rsi)        #Check if string 1[i]'s value is smaller than string 2[i]'s value.
+    jg      .smaller
     jmp     .equal
-.bigger:   # put 1 in return
-    movq    $1, %rax
-    jmp     .finish
-.smaller:   #   put -1 in retun
-    movq    $-1, %rax
-    jmp     .finish
-.equal:     #   while i<j loop
-    incq    %rdi
-    incq    %rsi
-    incq    %rdx
-    cmpl    %edx, %ecx
+
+.bigger:
+    movq    $1, %rax            #Set 1 as the returned value.
+    jmp     .pstrijcmp_finish
+
+.smaller:
+    movq    $-1, %rax           #Set -1 as the returned value.
+    jmp     .pstrijcmp_finish
+
+.equal:
+    addq    $1, %rdi            #Get the first string's address one byte further.
+    addq    $1, %rsi            #Get the second string's address one byte further.
+    addq    $1, %rdx            #i++.
+    cmpq    %rdx, %rcx          #Check if j > i.
     jge     .pstrijcmp_loop
-.finish:    # omg doneeeeee
-    movq    %rbp, %rsp
-    popq    %rbp
+
+.pstrijcmp_error:
+    movq    $Error, %rdi        #Put the format as the first argument.
+    xor     %rax, %rax
+    call    printf
+    movq    $-2, %rax           #Set -2 as the returned value.
+    jmp     .pstrijcmp_finish
+
+.pstrijcmp_finish:
+    addq    $8, %rsp
     ret

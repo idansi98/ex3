@@ -16,7 +16,7 @@ Int:		         .string "%d"
 .align 8 # Align the address to multiple of 8.
 .cases:
 	.quad	.case5060           #The 50/60 case.
-	.quad	.case51             #The Finishing case.
+	.quad	.case51             #Invalid case.
 	.quad	.case52             #The 52 case.
 	.quad	.case53             #The 53 case.
 	.quad	.case54             #The 54 case.
@@ -38,7 +38,9 @@ run_func:
 .invalid:
  	movq	$Invalid, %rdi      #Put the format as the first argument.
  	xor	    %rax, %rax          #Assign %rax to 0.
+ 	subq    $8, %rsp
  	call 	printf
+ 	addq    $8, %rsp
  	ret
 
 .case5060:
@@ -65,7 +67,7 @@ run_func:
 	ret
 
 .case51:
-	ret
+	jmp     .invalid
 
 .case52:
 	pushq	%r15                #Push %r15 to the stack for a backup.
@@ -217,36 +219,36 @@ run_func:
 	ret
 
 .case55:
-    pushq   %r12
-    pushq   %r13
-    pushq   %r14
+    pushq   %r12                #Push %r12 to the stack for a backup.
+    pushq   %r13                #Push %r13 to the stack for a backup.
+    pushq   %r14                #Push %r14 to the stack for a backup.
     subq    $16, %rsp           #Allocate memory for the two ints.
-    xor     %r12, %r12
+    xor     %r12, %r12          #Assign %r12 to 0.
     leaq    (%rsi), %r13        #Put the first string in %r13.
     leaq    (%rdx), %r14        #Put the second string in %r14.
     movq    $Int, %rdi          #Put the format as the first argument.
     movq    %rsp, %r12          #Put %rsp in %r12
     movq    %r12, %rsi          #Put %r12 as the second argument.
-    xor     %rax, %rax
+    xor     %rax, %rax          #Assign %rax to 0.
     call    scanf
     movq    $Int, %rdi          #Put the format as the first argument.
     leaq    8(%r12), %rsi       #Move %r12 value 8 bytes further and put in %rsi.
-    xor     %rax, %rax
+    xor     %rax, %rax          #Assign %rax to 0.
     call    scanf
-    xor     %rdx, %rdx
-    xor     %rcx, %rcx
+    xor     %rdx, %rdx          #Assign %rdx to 0.
+    xor     %rcx, %rcx          #Assign %rcx to 0.
     movq    (%r12), %rdx        #Put the first index(%r12) as the third argument.
-    leaq    8(%r12), %r12
-    movq    (%r12), %rcx          #Put the second index(%r12 + 8) as the fourth argument.
-    leaq    (%r13), %rdi
-    leaq    (%r14), %rsi
+    leaq    8(%r12), %r12       #Add 8 bytes to %r12
+    movq    (%r12), %rcx        #Put the second index(%r12 + 8) as the fourth argument.
+    leaq    (%r13), %rdi        #Put the first string (%r13) as the first argument.
+    leaq    (%r14), %rsi        #Put the second string (%r14) as the second argument.
     call    pstrijcmp
-    movq    $Case55, %rdi      #Put the format as the first argument.
-    movq    %rax, %rsi
-    xor     %rax, %rax
+    movq    $Case55, %rdi       #Put the format as the first argument.
+    movq    %rax, %rsi          #Put the comparison result as the second argument.
+    xor     %rax, %rax          #Assign %rax to 0.
     call    printf
-    addq    $16, %rsp
-    popq    %r14
-    popq    %r13
-    popq    %r12
+    addq    $16, %rsp           #Add what we allocated back to %rsp.
+    popq    %r14                #Pop and put it in %r14.
+    popq    %r13                #Pop and put it in %r13.
+    popq    %r12                #Pop and put it in %r12.
     ret
