@@ -49,7 +49,12 @@ pstrijcpy:
 	pushq 	%r13                #Push %r13 to the stack for a backup.
 	pushq   %r14                #Push %r14 to the stack for a backup.
 	pushq   %r15                #Push %r13 to the stack for a backup.
+	xor     %rbx, %rbx          #Assign %rbx to 0.
+	xor     %rbp, %rbp          #Assign %rbp to 0.
+	xor     %r12, %r12          #Assign %r12 to 0.
 	xor     %r13, %r13          #Assign %r13 to 0.
+	xor     %r14, %r14          #Assign %r14 to 0.
+	xor     %r15, %r15          #Assign %r15 to 0.
 	leaq	(%rdi), %r14        #The destination string (1).
 	leaq	(%rsi), %r15        #The source string (2).
 	call 	pstrlen             #Get the destination's length.
@@ -58,22 +63,22 @@ pstrijcpy:
 	call 	pstrlen             #Get the source's length.
 	movq	%rax, %rbp          #Save the source's length in %rbp.
 	movq    %r14, %r12          #Put %r14 in %r12.
-	cmpq 	$0, %rdx
+	cmpb 	$0, %dl
     jl 	    .pstrijcpy_error    #Jump if i < 0.
-    cmpq 	$0, %rcx
+    cmpb 	$0, %cl
 	jl   	.pstrijcpy_error    #Jump if j < 0.
-	cmpq	%rcx, %rdx
+	cmpb	%cl, %dl
 	jg 	    .pstrijcpy_error    #Jump if i > j.
-	cmpq 	%rbp, %rcx
+	cmpb 	%bpl, %cl
 	jge 	.pstrijcpy_error    #Jump if j > source's length.
-	cmpq 	%rbx, %rcx
+	cmpb 	%bl, %cl
 	jge 	.pstrijcpy_error    #Jump if j > destination's length.
 	leaq	1(%rdx, %r14), %r14 #Add %rdx(i) + 1 to the destination string.
 	leaq	1(%rdx, %r15), %r15 #Add %rdx(i) + 1 to the source string.
 	jmp     .pstrijcpy_loop
 
 .pstrijcpy_loop:
-	cmpq	%rcx, %rdx
+	cmpb	%cl, %dl
 	ja  	.pstrijcpy_end      #Jump to the end of the function.
 	movb	(%r15), %r13b       #Move from memory to register.
 	movb	%r13b, (%r14)       #Move from register to memory.
@@ -151,7 +156,7 @@ pstrijcmp:
     subq    $8, %rsp
     cmpb    $0, %dl             #Check if i < 0.
     jl      .pstrijcmp_error
-    cmpq    %rdx, %rcx          #Check if i > j.
+    cmpb    %dl, %cl          #Check if i > j.
     jl      .pstrijcmp_error
     cmpb    (%rdi), %cl         #Check if  j > first string's length.
     jge     .pstrijcmp_error
@@ -189,7 +194,7 @@ pstrijcmp:
 
 .pstrijcmp_error:
     movq    $Error, %rdi        #Put the format as the first argument.
-    xor     %rax, %rax
+    xor     %rax, %rax          #Assign %rax to 0.
     call    printf
     movq    $-2, %rax           #Set -2 as the returned value.
     jmp     .pstrijcmp_finish
