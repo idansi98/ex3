@@ -136,12 +136,12 @@ run_func:
     movq    $Int, %rdi          #Put the format as the first argument.
     xor     %rax, %rax          #Assign %rax to 0.
     call    scanf
-    movq    (%rsp), %r14        #Put the value stored in the memory address %rsp points to in %r14.
+    movb    (%rsp), %r14b        #Put the value stored in the memory address %rsp points to in %r14.
     movq    $Int, %rdi          #Put the format as the first argument.
     movq    %rsp, %rsi          #Put %rsp as the second argument.
     xor     %rax, %rax          #Assign %rax to 0.
     call    scanf
-    movq    (%rsp), %r15        #Put the value stored in the memory address %rsp points to in %r15.
+    movb    (%rsp), %r15b        #Put the value stored in the memory address %rsp points to in %r15.
     movq    %r12, %rdi          #Put %r12 as the first argument.
     movq    %r13, %rsi          #Put %r13 as the second argument.
     movq    %r14, %rdx          #Put %r14 as the third argument.
@@ -237,9 +237,9 @@ run_func:
     call    scanf
     xor     %rdx, %rdx          #Assign %rdx to 0.
     xor     %rcx, %rcx          #Assign %rcx to 0.
-    movq    (%r12), %rdx        #Put the first index(%r12) as the third argument.
+    movb    (%r12), %dl         #Put the first index(%r12) as the third argument.
     leaq    8(%r12), %r12       #Add 8 bytes to %r12
-    movq    (%r12), %rcx        #Put the second index(%r12 + 8) as the fourth argument.
+    movb    (%r12), %cl         #Put the second index(%r12 + 8) as the fourth argument.
     leaq    (%r13), %rdi        #Put the first string (%r13) as the first argument.
     leaq    (%r14), %rsi        #Put the second string (%r14) as the second argument.
     call    pstrijcmp

@@ -184,6 +184,8 @@ pstrijcmp:
     addq    $1, %rdx            #i++.
     cmpq    %rdx, %rcx          #Check if j > i.
     jge     .pstrijcmp_loop
+    movq    $0, %rax            #Set 0 as the returned value.
+    jmp     .pstrijcmp_finish
 
 .pstrijcmp_error:
     movq    $Error, %rdi        #Put the format as the first argument.
@@ -193,5 +195,5 @@ pstrijcmp:
     jmp     .pstrijcmp_finish
 
 .pstrijcmp_finish:
-    addq    $8, %rsp
+    addq    $8, %rsp            #Add what we allocated back to %rsp.
     ret
