@@ -7,29 +7,6 @@ String:	.string "%s"
 .extern run_func
 .type run_main, @function
 run_main:
-
-    /*pushq %rbp
-    movq %rsp, %rbp
-    pushq %rbx
-    subq $8, %rsp
-    movq $format_d, %rdi
-    leaq -8(%rbp), %rsi
-    movq $0, %rax
-    call scanf
-
-    movq $format_d, %rdi
-    leaq -16(%rbp), %rsi
-    movq %rdi, %rbx
-    movq $0, %rax
-    call scanf
-
-    movq -16(%rbp), %rsi
-    addq -8(%rbp), %rsi
-    movq $format_print, %rdi
-    movq $0, %rax
-    call printf*/
-
-
 	pushq	%rbp		        #Push %rbp to the stack so we can know what's the original %rbp.
 	movq	%rsp, %rbp	        #Move %rsp to %rbp so we can start the frame.
 	pushq   %r13                #Push %r13 to the stack for a backup.

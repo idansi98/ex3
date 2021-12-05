@@ -53,10 +53,10 @@ pstrijcpy:
 	leaq	(%rdi), %r14        #The destination string (1).
 	leaq	(%rsi), %r15        #The source string (2).
 	call 	pstrlen             #Get the destination's length.
-	movq 	%rax, %rbx          #Save the destination's length in %rbp.
-	movq	%rsi, %rdi          #Put the source as the argument.
+	movq 	%rax, %rbx          #Save the destination's length in %rbx.
+	movq	%rsi, %rdi          #Put the source as the first argument.
 	call 	pstrlen             #Get the source's length.
-	movq	%rax, %rbp          #Save the source's length in %rbx.
+	movq	%rax, %rbp          #Save the source's length in %rbp.
 	movq    %r14, %r12          #Put %r14 in %r12.
 	cmpq 	$0, %rdx
     jl 	    .pstrijcpy_error    #Jump if i < 0.
@@ -84,8 +84,6 @@ pstrijcpy:
 
 .pstrijcpy_error:
     subq    $8, %rsp            #Align %rsp so it ends with 0.
-    xor     %rbp, %rbp          #Assign %rbp to 0.
-	movq	%r12, %rbp          #Put the original destination in %rbp.
 	movq	$Error, %rdi        #Put the format as the first argument.
 	xor	    %rax, %rax          #Assign %rax to 0.
 	call 	printf
@@ -93,7 +91,7 @@ pstrijcpy:
 	jmp     .pstrijcpy_end
 
 .pstrijcpy_end:
-    movq    %rbp, %rax          #Set %rbp as the returned value.
+    movq    %r12, %rax          #Set %rbp as the returned value.
 	popq    %r15                #Pop and put it in %r15.
 	popq    %r14                #Pop and put it in %r14.
 	popq    %r13                #Pop and put it in %r13.
