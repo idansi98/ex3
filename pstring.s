@@ -37,7 +37,7 @@ replaceChar:
 
 .replace_end:
 	popq	%rdi                #Pop the original %rdi back to %rdi.
-	movq	%rdi, %rax          #Move the original string address to %rax(the returned value.
+	movq	%rdi, %rax          #Move the original string address to %rax(the returned value).
 	ret
 
 .global pstrijcpy
@@ -80,6 +80,7 @@ pstrijcpy:
 .pstrijcpy_loop:
 	cmpb	%cl, %dl
 	ja  	.pstrijcpy_end      #Jump to the end of the function.
+	xor     %r13, %r13          #Assign %r13 to 0.
 	movb	(%r15), %r13b       #Move from memory to register.
 	movb	%r13b, (%r14)       #Move from register to memory.
 	addq	$1, %r14            #Get the destination strings' address 1 byte further.
@@ -121,12 +122,12 @@ swapCase:
 	cmpq	%rax, %r8           #Compare the counter(%r8) with the string's length.
 	je	    .swap_end
 	movb	(%rdi), %r9b        #Move the char in the i'th place to %r9.
-	cmpb	$65, %r9b  	        #Check if %r9 is lower than 'A''s ascii value.
-	jl	    .swap_iter
+	cmpb	$64, %r9b  	        #Check if %r9 is lower than 'A''s ascii value.
+	jle	    .swap_iter
 	cmpb	$90, %r9b  	        #Check if %r9 is lower or equal to 'Z''s ascii value.
 	jle	    .up_to_low
-	cmpb	$97, %r9b           #Check if %r9 is lower than 'a''s ascii value.
-	jl	    .swap_iter
+	cmpb	$96, %r9b           #Check if %r9 is lower than 'a''s ascii value.
+	jle	    .swap_iter
 	cmpb	$122, %r9b	        #Check if %r9 is lower or equal to 'z''s ascii value.
 	jle	    .low_to_up
 	jmp	    .swap_iter
@@ -159,17 +160,17 @@ pstrijcmp:
     jl      .pstrijcmp_error
     cmpb    %dl, %cl            #Check if i > j.
     jl      .pstrijcmp_error
-    cmpb    (%rdi), %cl         #Check if  j > first string's length.
-    jge     .pstrijcmp_error
-    cmpb    (%rsi), %cl         #Check if j > Second string's length.
-    jge     .pstrijcmp_error
+    cmpb    %cl, (%rdi)         #Check if  j > first string's length.
+    jle     .pstrijcmp_error
+    cmpb    %cl, (%rsi)         #Check if j > Second string's length.
+    jle     .pstrijcmp_error
     leaq    1(%rdx, %rdi), %rdi #Get the first string's address that starts from i 1 byte further.
     leaq    1(%rdx, %rsi), %rsi #Get the second string's address that starts from i 1 byte further.
     jmp     .pstrijcmp_loop
 
 .pstrijcmp_loop:
     xor     %r8, %r8            #Assign $r8 to 0.
-    movq    (%rdi), %r8         #Put %r8 as the the i'th byte of string 1.
+    movb    (%rdi), %r8b        #Put %r8 as the the i'th byte of string 1.
     cmpb    %r8b, (%rsi)        #Check if string 1[i]'s value is bigger than string 2[i]'s value.
     jl      .bigger
     cmpb    %r8b, (%rsi)        #Check if string 1[i]'s value is smaller than string 2[i]'s value.

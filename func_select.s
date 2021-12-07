@@ -16,7 +16,7 @@ Int:		         .string "%d"
 .align 8 # Align the address to multiple of 8.
 .cases:
 	.quad	.case5060           #The 50/60 case.
-	.quad	.invalid             #Invalid case.
+	.quad	.invalid            #Invalid case.
 	.quad	.case52             #The 52 case.
 	.quad	.case53             #The 53 case.
 	.quad	.case54             #The 54 case.
@@ -33,12 +33,12 @@ run_func:
     ja	    .invalid	        #Jump to the invalid case.
     cmpq	$0, %rdi		    #Check if the difference  is less than 0.
     jb	    .invalid            #Jump to the invalid case.
-    jmp	*   .cases(,%rdi,8)	    #Go to the jumptable
+    jmp	*   .cases(,%rdi,8)	    #Go to the jumptable.
 
 .invalid:
  	movq	$Invalid, %rdi      #Put the format as the first argument.
  	xor	    %rax, %rax          #Assign %rax to 0.
- 	subq    $8, %rsp            #Align %rsp so itnds with 0.
+ 	subq    $8, %rsp            #Align %rsp so it ends with 0.
  	call 	printf
  	addq    $8, %rsp            #Add back what we allocated.
  	ret
@@ -49,6 +49,7 @@ run_func:
 	subq    $8, %rsp            #Subtract 8 from %rsp.
 	leaq	(%rsi), %rdi	    #Put the first string as the first argument.
 	call	pstrlen
+	xor     %rsi, %rsi          #Assign %rsi to 0.
 	movq	%rax, %rsi	        #Put the string's length as the second argument.
 	movq    $Case5060_first_str, %rdi         #Put String format as the first argument.
 	leaq	(%rdx), %r13	    #Put the second string in %r13.
