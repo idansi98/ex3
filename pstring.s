@@ -67,8 +67,8 @@ pstrijcpy:
     jl 	    .pstrijcpy_error    #Jump if i < 0.
     cmpb 	$0, %cl
 	jl   	.pstrijcpy_error    #Jump if j < 0.
-	cmpb	%cl, %dl
-	jg 	    .pstrijcpy_error    #Jump if i > j.
+	cmpb	%dl, %cl
+	jl 	    .pstrijcpy_error    #Jump if i > j.
 	cmpb 	%bpl, %cl
 	jge 	.pstrijcpy_error    #Jump if j > source's length.
 	cmpb 	%bl, %cl
@@ -173,8 +173,8 @@ pstrijcmp:
     movb    (%rdi), %r8b        #Put %r8 as the the i'th byte of string 1.
     cmpb    %r8b, (%rsi)        #Check if string 1[i]'s value is bigger than string 2[i]'s value.
     jl      .bigger
-    cmpb    %r8b, (%rsi)        #Check if string 1[i]'s value is smaller than string 2[i]'s value.
-    jg      .smaller
+    cmpb    (%rsi), %r8b        #Check if string 1[i]'s value is smaller than string 2[i]'s value.
+    jl      .smaller
     jmp     .equal
 
 .bigger:

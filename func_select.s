@@ -59,6 +59,7 @@ run_func:
 	call	pstrlen
 	movq	%rax, %r12	        #Move the retruned value from psrtlen(%rax) to %r13.
 	movq	$Case5060_second_str, %rdi        #Put the String format as the first argument.
+	xor     %rsi, %rsi
 	leaq	(%r12), %rsi        #Put the string's length as the second argument.
 	xor	    %rax, %rax          #Assign %rax to 0.
 	call	printf
@@ -88,6 +89,8 @@ run_func:
 	call	scanf
 	movzbq 	(%rsp), %r15        #Put the new char in %r15.
 	movq	%r12, %rdi          #Put the first string as the first argument.
+	xor     %rsi, %rsi
+	xor     %rdx, %rdx
 	movq	%r14, %rsi          #Put the old char as the second argument.
 	movq 	%r15, %rdx          #Put the new char as the third argument.
 	call 	replaceChar
@@ -96,10 +99,12 @@ run_func:
 	call 	replaceChar
 	movq 	%rax, %rbp          #Put the new second string in %r9.
 	movq 	$Case52_old_char, %rdi   #Put the old char format as the first argument.
+	xor     %rsi, %rsi
 	movq	%r14, %rsi          #Put the old char as the second argument.
 	xor     %rax, %rax          #Assign %rax to 0.
 	call    printf
 	movq    $Case52_new_char, %rdi   #Put the new char format as the first argument.
+	xor     %rsi, %rsi
 	movq	%r15, %rsi          #Put the new char as the second argument.
 	xor     %rax, %rax          #Assign %rax to 0.
 	call    printf
@@ -132,6 +137,7 @@ run_func:
     subq    $8, %rsp            #Subtract 8 from %rsp.
     leaq    (%rsi), %r12        #Put the first string in %r12.
     leaq    (%rdx), %r13        #Put the second string in %r13.
+    xor     %rsi, %rsi
     movq    %rsp, %rsi          #Put %rsp as the second argument.
     movq    $Int, %rdi          #Put the format as the first argument.
     xor     %rax, %rax          #Assign %rax to 0.
@@ -144,12 +150,15 @@ run_func:
     movb    (%rsp), %r15b       #Put the value stored in the memory address %rsp points to in %r15.
     movq    %r12, %rdi          #Put %r12 as the first argument.
     movq    %r13, %rsi          #Put %r13 as the second argument.
+    xor     %rdx, %rdx
+    xor     %rcx, %rcx
     movq    %r14, %rdx          #Put %r14 as the third argument.
     movq    %r15, %rcx          #Put %r15 as the fourth argument.
     call 	pstrijcpy
     leaq    (%rax), %r12        #Put %rax in %r12
     leaq    (%rax), %rdi        #Put %rax as the first argument.
     call    pstrlen
+    xor     %rsi, %rsi
     movq    %rax, %rsi          #Put %rax as the second argument.
     movq    $Case5354_len, %rdi #Put the format as the first argument.
     xor     %rax, %rax          #Assign %rax to 0.
@@ -160,6 +169,7 @@ run_func:
     call    printf
     leaq    (%r13), %rdi        #Put %r13(the original second string) as the first argument.
     call    pstrlen
+    xor     %rsi, %rsi
     movq    %rax, %rsi          #Put the original second string's length as the second argument.
     xor     %rax, %rax          #Assign %rax to 0.
     movq    $Case5354_len, %rdi #Put the format as the first argument.
@@ -200,6 +210,7 @@ run_func:
 	call 	pstrlen
 	movq 	%rax, %r15          #Put the second string's length in %r15.
 	movq 	$Case5354_len, %rdi	#Put the format as the first argument.
+	xor     %rsi, %rsi
 	movq    %r14, %rsi          #Put the first string's length as the second argument.
 	xor 	%rax, %rax          #Assign %rax to 0.
 	call 	printf
@@ -208,6 +219,7 @@ run_func:
 	xor 	%rax, %rax          #Assign %rax to 0.
 	call    printf
 	movq 	$Case5354_len, %rdi	#Put the format as the first argument.
+	xor     %rsi, %rsi
     movq    %r15, %rsi          #Put the second string's length as the second argument.
     xor 	%rax, %rax          #Assign %rax to 0.
     call    printf
@@ -250,6 +262,7 @@ run_func:
     leaq    (%r14), %rsi        #Put the second string (%r14) as the second argument.
     call    pstrijcmp
     movq    $Case55, %rdi       #Put the format as the first argument.
+    xor     %rsi, %rsi
     movq    %rax, %rsi          #Put the comparison result as the second argument.
     xor     %rax, %rax          #Assign %rax to 0.
     call    printf

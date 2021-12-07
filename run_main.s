@@ -12,6 +12,9 @@ run_main:
 	pushq   %r13                #Push %r13 to the stack for a backup.
 	pushq   %r14                #Push %r14 to the stack for a backup.
 	pushq   %r15                #Push %r15 to the stack for a backup.
+	xor     %r13, %r13
+	xor     %r14, %r14
+	xor     %r15, %r15
 	subq	$264, %rsp          #Align %rsp so it ends with 0 and allocate memory in the stack.
    	movq	$Int, %rdi	        #Put the format as the first argument.
    	movq	%rsp, %rsi 	        #Put %rsp as the second argument.
@@ -58,4 +61,3 @@ run_main:
     movq    %rbp, %rsp          #Move %rsp back to %rbp.
     popq    %rbp                #Pop and put it in %rbp.
     ret
-
