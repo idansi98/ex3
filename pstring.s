@@ -108,7 +108,8 @@ pstrijcpy:
 .global swapCase
 .type swapCase, @function
 swapCase:
-	pushq	%r12
+	pushq	%r12                #Push %r12 to stack.
+	xor     %r12, %r12          #Assign %r12 to 0.
 	leaq 	(%rdi), %r12        #Put the string in %r12.
 	call	pstrlen
 	addq	$1, %rdi            #Get the string's address 1 byte further.
@@ -156,7 +157,7 @@ pstrijcmp:
     subq    $8, %rsp
     cmpb    $0, %dl             #Check if i < 0.
     jl      .pstrijcmp_error
-    cmpb    %dl, %cl          #Check if i > j.
+    cmpb    %dl, %cl            #Check if i > j.
     jl      .pstrijcmp_error
     cmpb    (%rdi), %cl         #Check if  j > first string's length.
     jge     .pstrijcmp_error
@@ -167,7 +168,7 @@ pstrijcmp:
     jmp     .pstrijcmp_loop
 
 .pstrijcmp_loop:
-    xor     %r8, %r8
+    xor     %r8, %r8            #Assign $r8 to 0.
     movq    (%rdi), %r8         #Put %r8 as the the i'th byte of string 1.
     cmpb    %r8b, (%rsi)        #Check if string 1[i]'s value is bigger than string 2[i]'s value.
     jl      .bigger

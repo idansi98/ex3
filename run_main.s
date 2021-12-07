@@ -51,10 +51,10 @@ run_main:
     movq    %r15, %rdx          #Put %r15(second string) as the third argument.
     call    run_func
     xor     %rax, %rax          #Assign %rax to 0.
+    add     $552, %rsp          #Add what we allocated back to %rsp.
     popq    %r15                #Pop and put it in %r15.
     popq    %r14                #Pop and put it in %r14.
     popq    %r13                #Pop and put it in %r13.
-    add     $552, %rsp          #Add what we allocated back to %rsp.
     movq    %rbp, %rsp          #Move %rsp back to %rbp.
     popq    %rbp                #Pop and put it in %rbp.
     ret

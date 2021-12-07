@@ -16,7 +16,7 @@ Int:		         .string "%d"
 .align 8 # Align the address to multiple of 8.
 .cases:
 	.quad	.case5060           #The 50/60 case.
-	.quad	.case51             #Invalid case.
+	.quad	.invalid             #Invalid case.
 	.quad	.case52             #The 52 case.
 	.quad	.case53             #The 53 case.
 	.quad	.case54             #The 54 case.
@@ -26,7 +26,7 @@ Int:		         .string "%d"
 .extern pstrlen, replaceChar, pstrijcpy, swapCase, pstrijcmp
 .type run_func, @function
 run_func:
-    leaq    -50(%rdi), %rdi     #Detecting the last number (0,2,3,4,5).
+    subq    $50, %rdi           #Detecting the last number (0,2,3,4,5).
    	cmpq	$10, %rdi           #Check if it is the 50/60 case.
    	je      .case5060           #Jump to the 5060 case.
     cmpq	$5, %rdi		    #Check if the difference is more than 5.
@@ -38,9 +38,9 @@ run_func:
 .invalid:
  	movq	$Invalid, %rdi      #Put the format as the first argument.
  	xor	    %rax, %rax          #Assign %rax to 0.
- 	subq    $8, %rsp
+ 	subq    $8, %rsp            #Align %rsp so itnds with 0.
  	call 	printf
- 	addq    $8, %rsp
+ 	addq    $8, %rsp            #Add back what we allocated.
  	ret
 
 .case5060:
@@ -65,9 +65,6 @@ run_func:
 	popq	%r13                #Pop and put it in %r13.
 	popq	%r12                #Pop and put it in %r12.
 	ret
-
-.case51:
-	jmp     .invalid
 
 .case52:
 	pushq	%r15                #Push %r15 to the stack for a backup.
@@ -127,6 +124,8 @@ run_func:
     pushq   %r14                #Push %r14 to the stack for a backup.
     pushq   %r13                #Push %r13 to the stack for a backup.
     pushq   %r12                #Push %r12 to the stack for a backup.
+    xor     %r12, %r12          #Assign %r12 to 0.
+    xor     %r13, %r13          #Assign %r13 to 0.
     xor     %r14, %r14          #Assign %r14 to 0.
     xor     %r15, %r15          #Assign %r15 to 0.
     subq    $8, %rsp            #Subtract 8 from %rsp.
@@ -136,12 +135,12 @@ run_func:
     movq    $Int, %rdi          #Put the format as the first argument.
     xor     %rax, %rax          #Assign %rax to 0.
     call    scanf
-    movb    (%rsp), %r14b        #Put the value stored in the memory address %rsp points to in %r14.
+    movb    (%rsp), %r14b       #Put the value stored in the memory address %rsp points to in %r14.
     movq    $Int, %rdi          #Put the format as the first argument.
     movq    %rsp, %rsi          #Put %rsp as the second argument.
     xor     %rax, %rax          #Assign %rax to 0.
     call    scanf
-    movb    (%rsp), %r15b        #Put the value stored in the memory address %rsp points to in %r15.
+    movb    (%rsp), %r15b       #Put the value stored in the memory address %rsp points to in %r15.
     movq    %r12, %rdi          #Put %r12 as the first argument.
     movq    %r13, %rsi          #Put %r13 as the second argument.
     movq    %r14, %rdx          #Put %r14 as the third argument.
@@ -180,6 +179,10 @@ run_func:
 	pushq	%r13                #Push %r13 to the stack for a backup.
 	pushq   %r14                #Push %r14 to the stack for a backup.
 	pushq   %r15                #Push %r15 to the stack for a backup.
+	xor     %r12, %r12          #Assign %r12 to 0.
+	xor     %r13, %r13          #Assign %r13 to 0.
+	xor     %r14, %r14          #Assign %r14 to 0.
+	xor     %r15, %r15          #Assign %r15 to 0.
 	subq    $8, %rsp            #Align %rsp so it ends with 0 and allocate memory in the stack.
 	leaq	(%rsi), %r12        #Put the first string in %r12.
 	leaq	(%rdx), %r13        #Put the second string in %r13.
@@ -224,6 +227,8 @@ run_func:
     pushq   %r14                #Push %r14 to the stack for a backup.
     subq    $16, %rsp           #Allocate memory for the two ints.
     xor     %r12, %r12          #Assign %r12 to 0.
+    xor     %r13, %r13          #Assign %r13 to 0.
+    xor     %r14, %r14          #Assign %r14 to 0.
     leaq    (%rsi), %r13        #Put the first string in %r13.
     leaq    (%rdx), %r14        #Put the second string in %r14.
     movq    $Int, %rdi          #Put the format as the first argument.
