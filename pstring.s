@@ -16,26 +16,26 @@ replaceChar:
 	addq	$1, %rdi            #Get the string address 1 byte further.
 	xor	    %r8, %r8            #Assign %r8 to 0.
 	xor	    %r9, %r9            #Assign %r9 to 0.
-	jmp     .replace_loop
+	jmp     .replaceChar_loop
 
-.replace_loop:
+.replaceChar_loop:
 	cmpq	%rax, %r8           #Compare %r8 (the counter) to %rax (the string length).
-	je	    .replace_end        #If they are equal, jump to the end of loop.
+	je	    .replaceChar_end    #If they are equal, jump to the end of loop.
 	movb	(%rdi), %r9b        #Move the char in i'th place to %r9b.
 	cmpq	%r9, %rsi           #Check if the i'th char is equal to the char we want to replace.
-	je 	    .replace            #If they are, jump to replace.
-	jmp     .replace_iter
+	je 	    .replaceChar_rep    #If they are, jump to replace.
+	jmp     .replaceChar_iter
 
-.replace:
+.replaceChar_rep:
 	movb	%dl, (%rdi)         #Replace the old char with new char.
-	jmp	    .replace_iter       #Continue iterating in the loop.
+	jmp	    .replaceChar_iter   #Continue iterating in the loop.
 
-.replace_iter:
+.replaceChar_iter:
 	addq	$1, %r8             #Add 1 to the counter(%r8).
 	addq	$1, %rdi            #Get the string's address 1 byte further.
-	jmp	    .replace_loop       #Jump to excute the loop.
+	jmp	    .replaceChar_loop   #Jump to excute the loop.
 
-.replace_end:
+.replaceChar_end:
 	popq	%rdi                #Pop the original %rdi back to %rdi.
 	movq	%rdi, %rax          #Move the original string address to %rax(the returned value).
 	ret
@@ -116,38 +116,38 @@ swapCase:
 	addq	$1, %rdi            #Get the string's address 1 byte further.
 	xor	    %r8, %r8            #Assign %r8 to 0.
 	xor	    %r9, %r9            #Assign %r9 to 0.
-	jmp     .swap_loop
+	jmp     .swapCase_loop
 
-.swap_loop:
+.swapCase_loop:
 	cmpq	%rax, %r8           #Compare the counter(%r8) with the string's length.
-	je	    .swap_end
+	je	    .swapCase_end
 	movb	(%rdi), %r9b        #Move the char in the i'th place to %r9.
 	cmpb	$64, %r9b  	        #Check if %r9 is lower than 'A''s ascii value.
-	jle	    .swap_iter
+	jle	    .swapCase_iter
 	cmpb	$90, %r9b  	        #Check if %r9 is lower or equal to 'Z''s ascii value.
 	jle	    .up_to_low
 	cmpb	$96, %r9b           #Check if %r9 is lower than 'a''s ascii value.
-	jle	    .swap_iter
+	jle	    .swapCase_iter
 	cmpb	$122, %r9b	        #Check if %r9 is lower or equal to 'z''s ascii value.
 	jle	    .low_to_up
-	jmp	    .swap_iter
+	jmp	    .swapCase_iter
 
-.swap_iter:
+.swapCase_iter:
 	addq	$1, %r8             #Add 1 to the counter(%r8).
 	addq	$1, %rdi            #Get the string's address 1 byte further.
-	jmp	    .swap_loop
+	jmp	    .swapCase_loop
 
 .up_to_low:
 	addq	$32, %r9            #Add 32 to make the upper case lower.
 	movb	%r9b, (%rdi)        #Put the new char in the string.
-	jmp	.swap_iter
+	jmp	    .swapCase_iter
 
 .low_to_up:
 	subq	$32, %r9            #Sub 32 to make the lower case upper.
 	movb	%r9b, (%rdi)       #Put the new char in the string.
-	jmp	    .swap_iter
+	jmp	    .swapCase_iter
 
-.swap_end:
+.swapCase_end:
 	movq	%r12, %rax          #Set %r12 as the returned value.
 	popq	%r12                #Pop and put it in %r12.
 	ret
@@ -172,20 +172,20 @@ pstrijcmp:
     xor     %r8, %r8            #Assign $r8 to 0.
     movb    (%rdi), %r8b        #Put %r8 as the the i'th byte of string 1.
     cmpb    %r8b, (%rsi)        #Check if string 1[i]'s value is bigger than string 2[i]'s value.
-    jl      .bigger
+    jl      .pstrijcmp_bigger
     cmpb    (%rsi), %r8b        #Check if string 1[i]'s value is smaller than string 2[i]'s value.
-    jl      .smaller
-    jmp     .equal
+    jl      .pstrijcmp_smaller
+    jmp     .pstrijcmp_equal
 
-.bigger:
+.pstrijcmp_bigger:
     movq    $1, %rax            #Set 1 as the returned value.
     jmp     .pstrijcmp_finish
 
-.smaller:
+.pstrijcmp_smaller:
     movq    $-1, %rax           #Set -1 as the returned value.
     jmp     .pstrijcmp_finish
 
-.equal:
+.pstrijcmp_equal:
     addq    $1, %rdi            #Get the first string's address one byte further.
     addq    $1, %rsi            #Get the second string's address one byte further.
     addq    $1, %rdx            #i++.
